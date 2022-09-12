@@ -1,0 +1,6 @@
+com\food\ordering\system\order\service\domain\dto\CreateOrderCommand$CreateOrderCommandBuilder.class
+com\food\ordering\system\order\service\domain\dto\OrderAddress$OrderAddressBuilder.class
+com\food\ordering\system\order\service\domain\dto\OrderItem$OrderItemBuilder.class
+com\food\ordering\system\order\service\domain\dto\CreateOrderCommand.class
+com\food\ordering\system\order\service\domain\dto\OrderAddress.class
+com\food\ordering\system\order\service\domain\dto\OrderItem.class
