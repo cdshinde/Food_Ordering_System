@@ -7,6 +7,7 @@ import com.food.ordering.system.domain.valueobject.RestaurantId;
 import com.food.ordering.system.order.service.domain.dto.CreateOrderCommand;
 import com.food.ordering.system.order.service.domain.dto.CreatedOrderResponse;
 import com.food.ordering.system.order.service.domain.dto.OrderAddress;
+import com.food.ordering.system.order.service.domain.dto.TrackOrderResponse;
 import com.food.ordering.system.order.service.domain.entity.Order;
 import com.food.ordering.system.order.service.domain.entity.OrderItem;
 import com.food.ordering.system.order.service.domain.entity.Product;
@@ -16,6 +17,7 @@ import com.food.ordering.system.order.service.domain.valueobject.TrackingId;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -66,6 +68,14 @@ public class OrderDataMapper {
                 .orderTrackingId(orderResult.getTrackingId().getValue())
                 .orderStatus(orderResult.getOrderStatus())
                 .message(message)
+                .build();
+    }
+
+    public TrackOrderResponse convertOrderToTrackingOrderResponse(Order order) {
+        return TrackOrderResponse.builder()
+                .orderTrackingId(order.getTrackingId().getValue())
+                .orderStatus(order.getOrderStatus())
+                .failureMessages(order.getFailureMessage())
                 .build();
     }
 }

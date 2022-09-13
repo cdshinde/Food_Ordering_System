@@ -9,6 +9,7 @@ import com.food.ordering.system.order.service.domain.valueobject.TrackingId;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * According to the DDD Order is an Aggregate Root for the Order Processing User Case.
@@ -100,9 +101,9 @@ public class Order  extends Aggregate<OrderId> {
 
     private void validateItemPrice(OrderItem orderItem) {
         if(!orderItem.isPriceValid()){
-            throw new OrderDomainException("OrderItem price "+ orderItem.getPrice()+
+            throw new OrderDomainException("OrderItem price "+ orderItem.getPrice().getAmount()+
                     " is not valid for product "+orderItem.getProduct().getName() +
-                    " whose price is " +orderItem.getProduct().getPrice());
+                    " whose price is " +orderItem.getProduct().getPrice().getAmount());
         }
     }
 
@@ -115,6 +116,7 @@ public class Order  extends Aggregate<OrderId> {
     private void validateItemsPrice() {
         Money orderItemsTotal = orderItems.stream().map(orderItem -> {
             validateItemPrice(orderItem);
+            validateSubTotalPrice(orderItem);
             return orderItem.getSubTotal();
         }).reduce(Money.ZERO, Money::add);
 
@@ -124,6 +126,11 @@ public class Order  extends Aggregate<OrderId> {
         }
     }
 
+    private void validateSubTotalPrice(OrderItem orderItem) {
+        if(!orderItem.isSubTotalValid()){
+            throw new OrderDomainException("OrderItem subtotal is not equal to computation of quantity and unit price of the item");
+        }
+    }
 
 
     private void validateInitialOrder() {
@@ -167,7 +174,7 @@ public class Order  extends Aggregate<OrderId> {
 
     private void updateFailureMessages(List<String> failureMessages) {
         if(failureMessages != null && this.failureMessage != null ){
-            this.failureMessage.addAll(failureMessages.stream().filter(message -> !message.isEmpty()).toList());
+            this.failureMessage.addAll(failureMessages.stream().filter(message -> !message.isEmpty()).collect(Collectors.toList()));
         }
 
         if(failureMessages == null){
